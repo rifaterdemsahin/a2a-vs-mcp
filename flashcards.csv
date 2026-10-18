@@ -1,0 +1,29 @@
+Term,Category,Definition
+Host,MCP,The user-facing AI application or environment (e.g. Claude Desktop or Claude Code) coordinating reasoning and spawning MCP clients.
+Client,MCP,The protocol entity in the Host that opens a 1:1 stateful connection to an MCP server.
+Server,MCP,A service or child process exposing tools, resources, and prompt templates via JSON-RPC 2.0.
+Tools,MCP,Model-callable executable functions exposed by an MCP server that perform side effects or computation with JSON schema inputs.
+Resources,MCP,Passive read-only data sources identified by URIs (e.g. file:/// or db:///) that clients can read and subscribe to.
+Prompts,MCP,Pre-engineered prompt templates and slash-command workflows exposed by an MCP server for user or agent tasks.
+Sampling,MCP,A mechanism allowing an MCP server to request an LLM completion back from the client/host without holding its own API keys.
+Roots,MCP,Filesystem boundaries and URI prefixes specified by the client that constrain where an MCP server is authorized to operate.
+Elicitation,MCP,The pattern where a server or agent pauses execution to explicitly request clarification or user authorization before taking action.
+stdio,MCP,Standard input/output communication channel used when the host launches an MCP server directly as a local child process.
+Streamable HTTP,MCP,Remote network transport using HTTP POST for requests and Server-Sent Events (SSE) for server push streaming.
+OAuth,MCP,Open authorization standard (RFC 6749) used to authenticate clients connecting to remote HTTP/SSE servers.
+Agent Card,A2A,A machine-readable JSON metadata profile (at /.well-known/agent.json) declaring an agent's identity, skills, and endpoints.
+Task,A2A,A stateful, durable unit of work managed by an A2A agent transitioning through lifecycle states.
+Message,A2A,A structured communication payload exchanged between agents carrying instructions, thoughts, or replies.
+Part,A2A,A typed segment within a Message or Artifact (e.g. text/plain, code block, or image/png).
+Artifact,A2A,A durable deliverable or output produced during an A2A task (e.g. generated code or reports), supporting streaming updates.
+Streaming,A2A,Real-time delivery of task state changes, thoughts, and artifact chunks via Server-Sent Events (SSE).
+Push Notification,A2A,Asynchronous webhook alerts sent by an agent to notify callers of task status changes without polling.
+Skill,A2A,A discrete domain capability or toolset advertised by an agent in its Agent Card to attract task delegation.
+JSON-RPC 2.0,Shared,Stateless remote procedure call protocol with standard error codes and structure used across MCP and A2A.
+Capability Negotiation,Shared,Initial handshake phase where client and server exchange supported protocol versions and feature sets.
+Dynamic Subscription,Shared,Pub/sub mechanism where clients register interest in resource URIs to receive change notifications.
+Task Lifecycle States,A2A,Standard progression of a task: submitted -> working -> input-required -> completed / failed / canceled.
+JWS / JCS,Shared,Cryptographic JSON Web Signatures using Canonicalization Scheme to verify authenticity of Agent Cards.
+Confused Deputy,Security,Vulnerability where an AI agent executes an unauthorized command on behalf of a lower-privilege entity.
+Context Window Hygiene,General,Practice of curating tool schemas and resource payloads to prevent attention degradation and token waste.
+Roots Scoping,Security,Constraining local tool file operations strictly within host-approved workspace boundaries.

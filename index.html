@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCP vs A2A Lab | Claude Developer Certification Preparation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-secondary: #111827;
+      --bg-card: #182234;
+      --bg-card-hover: #1e2c42;
+      --accent-mcp: #d97706; /* Amber for Claude / MCP */
+      --accent-mcp-glow: rgba(217, 119, 6, 0.25);
+      --accent-a2a: #3b82f6; /* Blue for A2A multi-agent */
+      --accent-a2a-glow: rgba(59, 130, 246, 0.25);
+      --accent-success: #10b981;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-color: #27354a;
+      --border-glow: rgba(59, 130, 246, 0.4);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+
+    code, pre {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    header {
+      background: linear-gradient(180deg, rgba(17, 24, 39, 0.95) 0%, rgba(10, 14, 23, 0.8) 100%);
+      border-bottom: 1px solid var(--border-color);
+      padding: 32px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-mcp) 0%, var(--accent-a2a) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 20px;
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(217, 119, 6, 0.3);
+    }
+
+    .brand h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .badges {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+
+    .badge:hover {
+      border-color: var(--accent-a2a);
+      color: #fff;
+    }
+
+    .badge-mcp {
+      border-color: var(--accent-mcp);
+      color: #f59e0b;
+      background: rgba(217, 119, 6, 0.1);
+    }
+
+    .badge-a2a {
+      border-color: var(--accent-a2a);
+      color: #60a5fa;
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .badge-cert {
+      border-color: var(--accent-success);
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .hero {
+      padding: 48px 0 32px;
+      text-align: center;
+    }
+
+    .hero h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 820px;
+      margin: 0 auto 32px;
+    }
+
+    /* Comparison Split Grid */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-glow);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-mcp {
+      border-top: 4px solid var(--accent-mcp);
+    }
+
+    .card-a2a {
+      border-top: 4px solid var(--accent-a2a);
+    }
+
+    .card h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-list {
+      list-style: none;
+      margin-top: 16px;
+    }
+
+    .card-list li {
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .card-list li strong {
+      color: var(--text-primary);
+    }
+
+    /* 6 Stages Roadmap */
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stages-track {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin: 24px 0 48px;
+    }
+
+    .stage-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      text-align: center;
+      position: relative;
+    }
+
+    .stage-card.active {
+      border-color: var(--accent-a2a);
+      background: linear-gradient(180deg, rgba(59, 130, 246, 0.15) 0%, var(--bg-secondary) 100%);
+      box-shadow: 0 0 20px var(--accent-a2a-glow);
+    }
+
+    .stage-num {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+      border-radius: 50%;
+      background: var(--border-color);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+    }
+
+    .stage-card.active .stage-num {
+      background: var(--accent-a2a);
+    }
+
+    .stage-card.completed .stage-num {
+      background: var(--accent-success);
+    }
+
+    .stage-name {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .stage-desc {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Flashcard & Quiz Interactive Tabs */
+    .tab-bar {
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 24px;
+      padding-bottom: 8px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+    }
+
+    .tab-btn.active {
+      color: #fff;
+      background: var(--accent-a2a);
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* Interactive Flashcards */
+    .flashcard-box {
+      max-width: 640px;
+      margin: 0 auto 32px;
+      perspective: 1000px;
+    }
+
+    .flashcard {
+      width: 100%;
+      min-height: 260px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s ease;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .flashcard:hover {
+      border-color: var(--accent-a2a);
+    }
+
+    .flashcard-category {
+      position: absolute;
+      top: 16px;
+      left: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-mcp);
+    }
+
+    .flashcard-hint {
+      position: absolute;
+      bottom: 16px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .flashcard-term {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .flashcard-def {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      display: none;
+    }
+
+    .flashcard.flipped .flashcard-term {
+      font-size: 1.3rem;
+      color: var(--accent-a2a);
+    }
+
+    .flashcard.flipped .flashcard-def {
+      display: block;
+    }
+
+    .flashcard-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .control-btn {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .control-btn:hover {
+      background: var(--accent-a2a);
+      border-color: var(--accent-a2a);
+    }
+
+    /* Glossary Search & Grid */
+    .search-bar {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      font-family: inherit;
+      font-size: 1rem;
+      margin-bottom: 24px;
+    }
+
+    .search-bar:focus {
+      outline: none;
+      border-color: var(--accent-a2a);
+      box-shadow: 0 0 12px var(--accent-a2a-glow);
+    }
+
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
+    }
+
+    .glossary-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      transition: transform 0.2s ease;
+    }
+
+    .glossary-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-glow);
+    }
+
+    .glossary-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .glossary-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .glossary-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    /* Quiz Runner */
+    .quiz-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .quiz-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    .quiz-card h4 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .quiz-option {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.95rem;
+    }
+
+    .quiz-option:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-a2a);
+    }
+
+    .quiz-option.selected {
+      border-color: var(--accent-a2a);
+      background: rgba(59, 130, 246, 0.15);
+    }
+
+    .quiz-option.correct {
+      border-color: var(--accent-success);
+      background: rgba(16, 185, 129, 0.2);
+    }
+
+    .quiz-option.incorrect {
+      border-color: #ef4444;
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    .quiz-explanation {
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: rgba(16, 185, 129, 0.1);
+      border-left: 3px solid var(--accent-success);
+      border-radius: 4px;
+      font-size: 0.88rem;
+      color: #cbd5e1;
+      display: none;
+    }
+
+    .score-summary {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      text-align: center;
+      margin-top: 32px;
+    }
+
+    .score-num {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent-a2a);
+    }
+
+    footer {
+      margin-top: 64px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--accent-a2a);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <div class="container header-content">
+      <div class="brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <h1>a2a-mcp-lab</h1>
+          <p>Claude Developer Certification (CCDV-F) Interactive Protocol Suite</p>
+        </div>
+      </div>
+      <div class="badges">
+        <span class="badge badge-mcp">MCP Spec: 2026-07-28</span>
+        <span class="badge badge-mcp">MCP SDK: v2.3.0</span>
+        <span class="badge badge-a2a">A2A Spec: v1.0</span>
+        <span class="badge badge-cert">Claude Cert Foundations</span>
+        <a href="https://github.com/rifaterdemsahin/a2a-vs-mcp" target="_blank" class="badge">GitHub Repo ↗</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <div class="container hero">
+    <h2>Model Context Protocol vs. Agent2Agent Protocol</h2>
+    <p>
+      An end-to-end hands-on laboratory designed to systematically master AI tool integration (MCP)
+      and cross-agent orchestration (A2A) across 6 learning stages.
+    </p>
+
+    <!-- Side-by-Side Mental Model Comparison -->
+    <div class="compare-grid">
+      <div class="card card-mcp">
+        <div class="flashcard-category" style="color: var(--accent-mcp)">Client-to-Server Vertical Link</div>
+        <h3><span>🛠️</span> Model Context Protocol (MCP)</h3>
+        <p style="color: var(--text-secondary); font-size: 0.95rem;">
+          Connects a reasoning host/agent downward to local resources, tools, and prompts.
+        </p>
+        <ul class="card-list">
+          <li><strong>Role:</strong> Standardized context provider (database, git, bash, filesystem).</li>
+          <li><strong>Transport:</strong> <code>stdio</code> for local subprocesses; SSE / HTTP for remote.</li>
+          <li><strong>Execution Model:</strong> Passive until called via JSON-RPC 2.0 <code>tools/call</code>.</li>
+          <li><strong>Authentication:</strong> Local inherit process security or OAuth 2.0 bearer tokens.</li>
+          <li><strong>Official Exam Fit:</strong> Core Anthropic CCDV-F domain (tool use & custom servers).</li>
+        </ul>
+      </div>
+
+      <div class="card card-a2a">
+        <div class="flashcard-category" style="color: var(--accent-a2a)">Agent-to-Agent Horizontal Link</div>
+        <h3><span>🤝</span> Agent2Agent Protocol (A2A)</h3>
+        <p style="color: var(--text-secondary); font-size: 0.95rem;">
+          Connects autonomous AI agents horizontally to delegate stateful multi-step tasks.
+        </p>
+        <ul class="card-list">
+          <li><strong>Role:</strong> Cross-system agent discovery and long-running task delegation.</li>
+          <li><strong>Transport:</strong> HTTPS JSON-RPC 2.0 and Server-Sent Events (SSE) streaming.</li>
+          <li><strong>Discovery:</strong> Published machine-readable <code>AgentCard</code> at <code>/.well-known/agent.json</code>.</li>
+          <li><strong>State Machine:</strong> Tasks with durable lifecycle (<code>submitted</code>, <code>working</code>, <code>completed</code>).</li>
+          <li><strong>Output Model:</strong> Incremental <code>Artifact</code> generation and push notifications.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 6 Learning Stages Roadmap -->
+    <h3 class="section-title"><span>🧭</span> Six Learning Stages Tracker</h3>
+    <div class="stages-track">
+      <div class="stage-card active">
+        <span class="stage-num">1</span>
+        <div class="stage-name">Remember</div>
+        <div class="stage-desc">Core 25+ Vocabulary, Flashcards & Quiz</div>
+        <div style="margin-top: 8px;"><span class="badge" style="border-color: var(--accent-a2a); color: #60a5fa;">In Progress</span></div>
+      </div>
+      <div class="stage-card">
+        <span class="stage-num">2</span>
+        <div class="stage-name">Understand</div>
+        <div class="stage-desc">Mermaid Flow Diagrams & Matrix</div>
+      </div>
+      <div class="stage-card">
+        <span class="stage-num">3</span>
+        <div class="stage-name">Apply</div>
+        <div class="stage-desc">Smallest Working MCP & A2A Services</div>
+      </div>
+      <div class="stage-card">
+        <span class="stage-num">4</span>
+        <div class="stage-name">Analyse</div>
+        <div class="stage-desc">Raw Wire Messages & Threat Modeling</div>
+      </div>
+      <div class="stage-card">
+        <span class="stage-num">5</span>
+        <div class="stage-name">Evaluate</div>
+        <div class="stage-desc">1-5 Rubric, Schema & Injection Tests</div>
+      </div>
+      <div class="stage-card">
+        <span class="stage-num">6</span>
+        <div class="stage-name">Create</div>
+        <div class="stage-desc">Capstone Coordinator & MCP Specialist</div>
+      </div>
+    </div>
+
+    <!-- Interactive Navigation Tabs -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('flashcards')">📇 Flashcard Trainer</button>
+      <button class="tab-btn" onclick="switchTab('glossary')">📖 28+ Term Glossary</button>
+      <button class="tab-btn" onclick="switchTab('quiz')">✍️ Interactive Quiz 1 (10 Questions)</button>
+    </div>
+
+    <!-- Tab 1: Flashcard Trainer -->
+    <div id="tab-flashcards" class="tab-panel active">
+      <div class="flashcard-box">
+        <div class="flashcard" id="activeFlashcard" onclick="flipCard()">
+          <div class="flashcard-category" id="fcCategory">MCP PROTOCOL</div>
+          <div class="flashcard-term" id="fcTerm">Host</div>
+          <div class="flashcard-def" id="fcDef">The user-facing AI application or environment (e.g., Claude Desktop, Claude Code) that coordinates model reasoning, manages security boundaries, and initiates MCP clients.</div>
+          <div class="flashcard-hint" id="fcHint">Click card to reveal definition 💡</div>
+        </div>
+        <div class="flashcard-controls">
+          <button class="control-btn" onclick="prevCard()">← Previous</button>
+          <span id="fcCounter" style="font-size: 0.9rem; color: var(--text-secondary);">1 / 28</span>
+          <button class="control-btn" onclick="nextCard()">Next →</button>
+          <button class="control-btn" onclick="shuffleCards()">🔀 Shuffle</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Glossary -->
+    <div id="tab-glossary" class="tab-panel">
+      <input type="text" id="glossarySearch" class="search-bar" placeholder="Search terms (e.g. host, task, sampling, roots, stdio, artifact)..." oninput="filterGlossary()">
+      <div class="glossary-grid" id="glossaryContainer">
+        <!-- Rendered via JavaScript -->
+      </div>
+    </div>
+
+    <!-- Tab 3: Interactive Quiz -->
+    <div id="tab-quiz" class="tab-panel">
+      <div class="quiz-container" id="quizContainer">
+        <!-- Rendered via JavaScript -->
+      </div>
+      <div class="score-summary" id="quizScoreBox" style="display: none;">
+        <h3>Quiz 1 Results</h3>
+        <div class="score-num" id="quizScoreDisplay">0 / 10</div>
+        <p id="quizScoreFeedback" style="color: var(--text-secondary); margin-top: 8px;"></p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>
+        <strong>a2a-mcp-lab</strong> &bull; Claude Developer Certification Preparation &bull; 
+        <a href="https://github.com/rifaterdemsahin/a2a-vs-mcp" target="_blank">GitHub Repository</a> &bull;
+        <a href="docs/01-remember.md">docs/01-remember.md</a> &bull;
+        <a href="docs/progress.md">docs/progress.md</a>
+      </p>
+      <p style="margin-top: 6px; font-size: 0.75rem;">
+        Deployed on GitHub Pages &bull; Local server: <code>http://localhost:30080</code>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Full dataset of 28 core terms
+    const flashcardData = [
+      { term: "Host", category: "MCP", def: "The user-facing AI application or environment (e.g. Claude Desktop, Claude Code) that coordinates model reasoning, manages security boundaries, and initiates MCP clients." },
+      { term: "Client", category: "MCP", def: "The protocol entity residing in or alongside the Host that maintains a 1:1 stateful connection to an MCP server." },
+      { term: "Server", category: "MCP", def: "A lightweight service exposing tools, resources, and prompt templates to MCP clients via JSON-RPC 2.0." },
+      { term: "Tools", category: "MCP", def: "Executable functions exposed by an MCP server that take structured JSON schema parameters and perform side effects or computations." },
+      { term: "Resources", category: "MCP", def: "Read-only data sources identified by URIs (file:///, db:///) that clients can read and subscribe to for state changes." },
+      { term: "Prompts", category: "MCP", def: "Pre-engineered prompt templates and slash-command workflows exposed by an MCP server for user or agent tasks." },
+      { term: "Sampling", category: "MCP", def: "A feature allowing an MCP server to request an LLM completion back from the host, keeping API keys securely in the host." },
+      { term: "Roots", category: "MCP", def: "Top-level filesystem boundaries and URI roots declared by the client to restrict where an MCP server is authorized to operate." },
+      { term: "Elicitation", category: "MCP", def: "The protocol flow where an entity pauses execution to explicitly request clarification or user authorization before taking action." },
+      { term: "stdio Transport", category: "MCP", def: "Standard input/output channel used when the host launches an MCP server directly as a local child process." },
+      { term: "Streamable HTTP (SSE)", category: "MCP", def: "Remote transport using HTTP POST for requests and Server-Sent Events (SSE) for server-to-client streaming push updates." },
+      { term: "OAuth", category: "MCP", def: "Industry-standard authorization framework (RFC 6749) used to authenticate clients connecting to remote HTTP/SSE servers." },
+      { term: "Agent Card (AgentCard)", category: "A2A", def: "Standardized machine-readable JSON profile hosted at /.well-known/agent.json declaring identity, skills, and endpoints." },
+      { term: "Task", category: "A2A", def: "A stateful, durable unit of work managed by an A2A agent transitioning through lifecycle states (submitted, working, completed)." },
+      { term: "Message", category: "A2A", def: "Structured communication unit exchanged between agents carrying instructions, thoughts, queries, or replies." },
+      { term: "Part", category: "A2A", def: "A typed segment within a Message or Artifact (e.g. text/plain, application/json, or image/png)." },
+      { term: "Artifact", category: "A2A", def: "A durable deliverable or output produced during an A2A task (e.g. generated code or reports), supporting streaming updates." },
+      { term: "Streaming", category: "A2A", def: "Real-time delivery of task state changes, thoughts, and artifact chunks via Server-Sent Events (SSE)." },
+      { term: "Push Notification", category: "A2A", def: "Asynchronous webhook alerts sent by an agent to notify callers of task status updates without tight polling loops." },
+      { term: "Skill", category: "A2A", def: "A discrete domain capability or toolset advertised by an agent in its Agent Card to attract task delegation." },
+      { term: "JSON-RPC 2.0", category: "Shared", def: "Stateless remote procedure call protocol with standard error codes and structure used across MCP and A2A." },
+      { term: "Capability Negotiation", category: "Shared", def: "Initial handshake phase where client and server exchange supported protocol versions and feature sets." },
+      { term: "Dynamic Subscription", category: "Shared", def: "Pub/sub mechanism where clients register interest in resource URIs to receive notifications/resources/updated." },
+      { term: "Task Lifecycle States", category: "A2A", def: "Formalized state progression: submitted -> working -> input-required -> completed / failed / canceled." },
+      { term: "JWS / JCS Signatures", category: "Security", def: "Cryptographic JSON Web Signatures using Canonicalization Scheme to verify authenticity of Agent Cards." },
+      { term: "Confused Deputy", category: "Security", def: "Vulnerability where an AI agent executes an unauthorized command on behalf of a lower-privilege entity." },
+      { term: "Context Window Hygiene", category: "General", def: "Practice of curating tool schemas and resource payloads to prevent attention degradation and token waste." },
+      { term: "Roots Scoping", category: "Security", def: "Constraining local tool file operations strictly within host-approved workspace boundaries." }
+    ];
+
+    // Quiz Questions Dataset
+    const quizQuestions = [
+      {
+        q: "1. In the MCP architecture, what is the fundamental difference between an MCP Host and an MCP Client?",
+        options: [
+          "The Host runs in the cloud, while the Client runs on the user's laptop.",
+          "The Host is the end-user application (e.g., Claude Desktop) holding model context, while the Client is the protocol layer establishing connections to an MCP server.",
+          "The Host only reads resources, while the Client executes tool side effects.",
+          "The Host serializes JSON-RPC 2.0, while the Client handles LLM prompt caching."
+        ],
+        answer: 1,
+        exp: "The Host manages LLM interaction, context assembly, and user permissions. The Client is the protocol endpoint communicating with the Server."
+      },
+      {
+        q: "2. An MCP server wants to provide real-time git commit logs without allowing Claude to execute arbitrary shell commands. Which MCP primitive is best suited?",
+        options: [
+          "Tool with a bash execution script",
+          "Prompt template with hardcoded git logs",
+          "Read-only Resource with a URI like git:///repo/commits",
+          "Sampling request asking Claude to summarize the branch"
+        ],
+        answer: 2,
+        exp: "Resources provide safe, read-only data access with zero side effects, ideal for passive telemetry and log inspection."
+      },
+      {
+        q: "3. What is the primary security advantage of MCP's Sampling capability?",
+        options: [
+          "It encrypts all network packets using mTLS between server and host.",
+          "It allows an MCP server to request LLM reasoning from the host without requiring the server to hold its own sensitive Anthropic API keys.",
+          "It samples random tokens to detect prompt injection attacks.",
+          "It bypasses human confirmation for high-throughput workloads."
+        ],
+        answer: 1,
+        exp: "Sampling centralizes API keys, user consent, and token usage inside the Host, preventing third-party servers from requiring raw API keys."
+      },
+      {
+        q: "4. When running Claude Code or Claude Desktop with a local custom MCP server, which transport mechanism is used by default?",
+        options: [
+          "gRPC over HTTP/2",
+          "WebSockets over TLS",
+          "Standard Input/Output (stdio)",
+          "REST API over HTTP/1.1"
+        ],
+        answer: 2,
+        exp: "Local tools run as sub-processes where communication occurs directly over stdin/stdout pipes, minimizing networking overhead and attack surface."
+      },
+      {
+        q: "5. What are MCP Roots primarily used for?",
+        options: [
+          "Defining the root administrative password for database servers.",
+          "Declaring top-level filesystem boundaries and URI roots to restrict where a server is authorized to read or write files.",
+          "Specifying root certificate authorities for OAuth signing.",
+          "Creating root directories where Claude models cache system prompts."
+        ],
+        answer: 1,
+        exp: "Roots inform the server about workspace boundaries, helping enforce sandbox restrictions and preventing path traversal attacks."
+      },
+      {
+        q: "6. Where does an Agent2Agent (A2A) compliant agent publish its machine-readable profile (the Agent Card)?",
+        options: [
+          "/robots.txt",
+          "/.well-known/agent.json",
+          "/v1/openapi.yaml",
+          "/mcp/manifest.json"
+        ],
+        answer: 1,
+        exp: "In the A2A standard, agents publish their discovery metadata (AgentCard) at /.well-known/agent.json."
+      },
+      {
+        q: "7. In the A2A protocol, how are long-running, multi-step asynchronous operations represented and tracked?",
+        options: [
+          "As stateless HTTP POST requests that block until completed.",
+          "As stateful Tasks that transition through explicit states (submitted, working, input-required, completed, failed).",
+          "As ephemeral database locks that auto-expire after 30 seconds.",
+          "As MCP Resources subscribed via SSE."
+        ],
+        answer: 1,
+        exp: "Tasks provide durable state tracking across network reconnections and support human-in-the-loop workflows via input-required."
+      },
+      {
+        q: "8. What is the designated term in A2A for durable deliverables generated during a task (code, reports, images)?",
+        options: [
+          "Payload",
+          "ResultBlob",
+          "Artifact",
+          "Attachment"
+        ],
+        answer: 2,
+        exp: "Artifacts represent durable output deliverables associated with a Task and support chunked streaming updates."
+      },
+      {
+        q: "9. Which statement most accurately captures the architectural distinction between MCP and A2A?",
+        options: [
+          "MCP connects an agent downward to tools/resources; A2A connects autonomous agents horizontally to other agents.",
+          "MCP only works with Claude; A2A only works with open-source models.",
+          "MCP is stateful across sessions; A2A is strictly stateless JSON-RPC.",
+          "MCP replaces HTTP with stdio; A2A replaces WebSockets with gRPC."
+        ],
+        answer: 0,
+        exp: "MCP connects a reasoning model to local/remote tools and data sources. A2A allows distinct agents with separate models/identities to delegate tasks and collaborate."
+      },
+      {
+        q: "10. An agent executes an unauthorized command on behalf of an unverified caller without checking boundaries. What is this called?",
+        options: [
+          "Sybil attack; mitigated by proof-of-work mining.",
+          "Confused Deputy; mitigated by strict privilege scoping, user-consent elicitation, and validating authorization context.",
+          "Denial of Service; mitigated by rate limiting.",
+          "Man-in-the-middle; mitigated by base64 encoding."
+        ],
+        answer: 1,
+        exp: "When an agent acts on behalf of an unverified caller without checking authorization boundaries, it acts as a confused deputy. Mitigation requires explicit consent, scoped permissions, and parameter validation."
+      }
+    ];
+
+    // State Variables
+    let currentCardIndex = 0;
+    let userAnswers = {};
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+      
+      const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+      if (activeBtn) activeBtn.classList.add('active');
+      
+      const activePanel = document.getElementById('tab-' + tabId);
+      if (activePanel) activePanel.classList.add('active');
+    }
+
+    // Flashcard Functions
+    function updateFlashcardUI() {
+      const card = flashcardData[currentCardIndex];
+      const el = document.getElementById('activeFlashcard');
+      el.classList.remove('flipped');
+      document.getElementById('fcCategory').innerText = card.category + " PROTOCOL";
+      document.getElementById('fcCategory').style.color = card.category === 'MCP' ? 'var(--accent-mcp)' : 'var(--accent-a2a)';
+      document.getElementById('fcTerm').innerText = card.term;
+      document.getElementById('fcDef').innerText = card.def;
+      document.getElementById('fcHint').innerText = "Click card to reveal definition 💡";
+      document.getElementById('fcCounter').innerText = `${currentCardIndex + 1} / ${flashcardData.length}`;
+    }
+
+    function flipCard() {
+      const el = document.getElementById('activeFlashcard');
+      el.classList.toggle('flipped');
+      if (el.classList.contains('flipped')) {
+        document.getElementById('fcHint').innerText = "Click card to flip back 🔄";
+      } else {
+        document.getElementById('fcHint').innerText = "Click card to reveal definition 💡";
+      }
+    }
+
+    function nextCard() {
+      currentCardIndex = (currentCardIndex + 1) % flashcardData.length;
+      updateFlashcardUI();
+    }
+
+    function prevCard() {
+      currentCardIndex = (currentCardIndex - 1 + flashcardData.length) % flashcardData.length;
+      updateFlashcardUI();
+    }
+
+    function shuffleCards() {
+      flashcardData.sort(() => Math.random() - 0.5);
+      currentCardIndex = 0;
+      updateFlashcardUI();
+    }
+
+    // Glossary Functions
+    function renderGlossary(items) {
+      const container = document.getElementById('glossaryContainer');
+      container.innerHTML = items.map(item => `
+        <div class="glossary-item">
+          <div class="glossary-header">
+            <span class="glossary-title">${item.term}</span>
+            <span class="badge ${item.category === 'MCP' ? 'badge-mcp' : item.category === 'A2A' ? 'badge-a2a' : ''}">${item.category}</span>
+          </div>
+          <p class="glossary-desc">${item.def}</p>
+        </div>
+      `).join('');
+    }
+
+    function filterGlossary() {
+      const query = document.getElementById('glossarySearch').value.toLowerCase();
+      const filtered = flashcardData.filter(item => 
+        item.term.toLowerCase().includes(query) || 
+        item.def.toLowerCase().includes(query) ||
+        item.category.toLowerCase().includes(query)
+      );
+      renderGlossary(filtered);
+    }
+
+    // Quiz Functions
+    function renderQuiz() {
+      const container = document.getElementById('quizContainer');
+      container.innerHTML = quizQuestions.map((q, qIndex) => `
+        <div class="quiz-card" id="qCard_${qIndex}">
+          <h4>${q.q}</h4>
+          <div>
+            ${q.options.map((opt, optIndex) => `
+              <div class="quiz-option" id="opt_${qIndex}_${optIndex}" onclick="selectAnswer(${qIndex}, ${optIndex})">
+                <input type="radio" name="q_${qIndex}" ${userAnswers[qIndex] === optIndex ? 'checked' : ''}>
+                <span>${opt}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="quiz-explanation" id="exp_${qIndex}">${q.exp}</div>
+        </div>
+      `).join('');
+    }
+
+    function selectAnswer(qIndex, optIndex) {
+      userAnswers[qIndex] = optIndex;
+      const question = quizQuestions[qIndex];
+      const isCorrect = (optIndex === question.answer);
+      
+      // Update styling
+      question.options.forEach((_, idx) => {
+        const el = document.getElementById(`opt_${qIndex}_${idx}`);
+        el.classList.remove('selected', 'correct', 'incorrect');
+        if (idx === optIndex) {
+          el.classList.add(isCorrect ? 'correct' : 'incorrect');
+        }
+        if (idx === question.answer) {
+          el.classList.add('correct');
+        }
+      });
+
+      // Show explanation
+      const expEl = document.getElementById(`exp_${qIndex}`);
+      expEl.style.display = 'block';
+
+      calculateScore();
+    }
+
+    function calculateScore() {
+      let score = 0;
+      let answeredCount = 0;
+      quizQuestions.forEach((q, idx) => {
+        if (userAnswers[idx] !== undefined) {
+          answeredCount++;
+          if (userAnswers[idx] === q.answer) {
+            score++;
+          }
+        }
+      });
+
+      const scoreBox = document.getElementById('quizScoreBox');
+      scoreBox.style.display = 'block';
+      document.getElementById('quizScoreDisplay').innerText = `${score} / ${quizQuestions.length}`;
+      
+      const feedback = document.getElementById('quizScoreFeedback');
+      if (answeredCount < quizQuestions.length) {
+        feedback.innerText = `Answered ${answeredCount} of ${quizQuestions.length} questions. Keep going!`;
+      } else if (score >= 9) {
+        feedback.innerText = "🏆 Outstanding! You have mastered the Stage 1 vocabulary and architecture fundamentals!";
+      } else if (score >= 7) {
+        feedback.innerText = "👍 Strong passing score! Review the missed questions above before moving to Stage 2.";
+      } else {
+        feedback.innerText = "📚 Recommended review: Revisit docs/01-remember.md and flashcards before proceeding.";
+      }
+    }
+
+    // Initialize UI on load
+    window.addEventListener('DOMContentLoaded', () => {
+      updateFlashcardUI();
+      renderGlossary(flashcardData);
+      renderQuiz();
+    });
+  </script>
+</body>
+</html>
